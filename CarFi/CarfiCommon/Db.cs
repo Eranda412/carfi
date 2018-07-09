@@ -20,7 +20,7 @@ namespace CarFi.CarfiCommon
         public Credentials GetLoginData(string username)
         {
 
-            string select_qry = $"SELECT * FROM login where username = '{username}' "; // ID is primary key
+            string select_qry = $"SELECT TOP 1 * FROM login where username = '{username}' "; // ID is primary key
             SqlConnection cnn = new SqlConnection(ConnetionString);
             SqlCommand cmd = new SqlCommand(select_qry);
 
@@ -31,15 +31,18 @@ namespace CarFi.CarfiCommon
             SqlDataReader reader = cmd.ExecuteReader();
             Credentials userCredentials = new Credentials();
 
+            
+
+
             if (reader.HasRows)
             {
-                if (reader.FieldCount == 1)
+                if (reader.FieldCount > 0)
                 {
                     while (reader.Read())
                     {
                        
                         userCredentials.username = reader["username"].ToString();
-                        userCredentials.pass = reader["pass"].ToString();
+                        userCredentials.pass = reader["passwd"].ToString();
                         return userCredentials;
                     }
                 }

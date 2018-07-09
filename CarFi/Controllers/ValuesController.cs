@@ -43,16 +43,21 @@ namespace CarFi.Controllers
         public Dictionary<string,string> Userlogin(Credentials credentials) {
             loggerInfo.Info(credentials.username);
             Login login = new Login();
-            List<Dictionary<string, string>> loginresult = new List<Dictionary<string, string>>();
             Dictionary<string, string> datadic = new Dictionary<string, string>();
-            //Dictionary<string, string> datadic2 = new Dictionary<string, string>();
-            datadic.Add("isValid", "true");
-            //datadic2.Add("NotValid", "false");
-            loginresult.Add(datadic);
-           // loginresult.Add(datadic2);
+           
             
-            // List.add
-            //return login.ValidateUser(credentials);
+            if (login.ValidateUser(credentials))
+            {
+                datadic.Add("isValid", "true");
+                loggerInfo.Info("returning true");
+            }
+            else
+            {
+                datadic.Add("isValid", "false");
+                loggerInfo.Info("returning false");
+
+            }
+           // return login.ValidateUser(credentials);
             return datadic;
         }
     }
