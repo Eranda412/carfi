@@ -11,6 +11,7 @@ namespace CarFi.Controllers
 {
     public class ValuesController : ApiController
     {
+        ILog loggerInfo = LogManager.GetLogger("Info");
         // GET api/values
         public IEnumerable<string> Get()
         {
@@ -39,10 +40,20 @@ namespace CarFi.Controllers
         }
 
         [HttpPost]
-        public string Userlogin([FromBody]credentials credentials) {
-            ILog loggerInfo = LogManager.GetLogger("Info");
-            loggerInfo.Info("working");
-            return Login.getUserData(credentials);
+        public Dictionary<string,string> Userlogin(Credentials credentials) {
+            loggerInfo.Info(credentials.username);
+            Login login = new Login();
+            List<Dictionary<string, string>> loginresult = new List<Dictionary<string, string>>();
+            Dictionary<string, string> datadic = new Dictionary<string, string>();
+            //Dictionary<string, string> datadic2 = new Dictionary<string, string>();
+            datadic.Add("isValid", "true");
+            //datadic2.Add("NotValid", "false");
+            loginresult.Add(datadic);
+           // loginresult.Add(datadic2);
+            
+            // List.add
+            //return login.ValidateUser(credentials);
+            return datadic;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using CarFi.Models;
+﻿using CarFi.CarfiCommon;
+using CarFi.Models;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -10,57 +11,66 @@ using System.Web.UI.WebControls;
 
 namespace CarFi.Controllers
 {
-    public static class Login
+    public class Login
     {
+        ILog loggerInfo = LogManager.GetLogger("Info");
+        //public Credentials getUserData(Credentials credentials)
+        //{
+        //    try
+        //    {
+        //        loggerInfo.Info("Login");
+        //        GetUserData(credentials);
 
-        private static string ConnetionString = "server = localhost; database = CarFi; uid = sa; Password = tiqri123@; ";
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        ILog loggerError = LogManager.GetLogger("Error");
+        //        loggerError.Error(e);
 
-        public static string getUserData(credentials credentials)
+        //    }
+
+        //    return credentials;
+        //}
+
+        //private void GetUserData(Credentials credentials)
+        //{
+        //    Db db = new Db();
+        //    SqlDataReader reader = db.GetUserData(credentials);
+
+        //    if (reader.HasRows)
+        //    {
+        //        var password = reader[0];
+        //        ILog loggerInfo = LogManager.GetLogger("Info");
+        //        loggerInfo.Info(password);
+        //    }
+        //}
+
+        public Boolean ValidateUser(Credentials credentials)
         {
-            try {
-                ILog loggerInfo = LogManager.GetLogger("Info");
-                loggerInfo.Info("Login");
-                loggerInfo.Info(credentials.username.ToString());
-            }
-            catch (Exception e)
-            {
-                ILog loggerError = LogManager.GetLogger("Error");
-                loggerError.Error(e);
-                return e.ToString();
-            }
-            //GetUser();
-            return "userName";
-        }
-        
-        private static void GetUser() {
-            string select_qry = "SELECT * FROM users"; // ID is primary key
-            SqlConnection cnn = new SqlConnection(ConnetionString);
-           
-            SqlCommand cmd = new SqlCommand(select_qry);
-            
-            cmd.CommandType = CommandType.Text;
-            cmd.Connection = cnn;
-            cnn.Open();
 
-            SqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
+            try
             {
-                while (reader.Read())
+                var password = GetUserPassword(credentials.username);
+
+                if(password == credentials.pass)
                 {
-                    ILog loggerInfo = LogManager.GetLogger("Info");
-                    loggerInfo.Info(reader.GetString(1));
-                    
+                    return true;
                 }
             }
-            else
-            {
-                Console.WriteLine("No rows found.");
+            catch (Exception e) {
+                loggerInfo.Error("Unable to get password for user:" + credentials.username);
+                return false;
             }
-            reader.Close();
+            
+            return true;
+        }
 
-            cnn.Close();
+        private string GetUserPassword(string username)
+        {
 
+            Db db = new Db();
+            Credentials userCredentials = db.GetLoginData(username);
+            return userCredentials.pass;
         }
     }
 }

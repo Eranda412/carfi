@@ -5,9 +5,9 @@ using System.Web;
 
 namespace CarFi.Models
 {
-    public class credentials
+    public class Credentials
     {
         public string username;
-        public string passwd;
+        public string pass;
     }
 }
